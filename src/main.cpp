@@ -3,16 +3,16 @@
 #include <routes.hpp>
 #include <sock.hpp>
 
-#define route(_path, handler)       \
-  if (req.path == _path) {          \
+#define route(_path, handler)   \
+  if (req.path == _path) {      \
     chemapp::handler(req, res); \
-    return;                         \
+    return;                     \
   }
 
-#define route_method(_path, _method, handler)       \
+#define route_method(_path, _method, handler)        \
   if (req.path == _path and req.method == _method) { \
-    chemapp::handler(req, res);                 \
-    return;                                         \
+    chemapp::handler(req, res);                      \
+    return;                                          \
   }
 
 int main() {
@@ -93,10 +93,16 @@ int main() {
     return p.find("..") == std::string_view::npos;
   };
 
+  // check .env
+  const char *frontend_url = std::getenv("FRONTEND_URL");
+  if (!frontend_url) {
+    throw std::runtime_error("FRONTEND_URL not set");
+  }
+
   socket sock;
   sock.listen(6942, [&](const socket::request &req, socket::response &res) {
     // allow cors
-    res.headers["access-control-allow-origin"] = std::getenv("FRONTEND_URL");
+    res.headers["access-control-allow-origin"] = frontend_url;
     res.headers["access-control-allow-credentials"] = "true";
     res.headers["access-control-allow-headers"] = "Content-Type, Authorization";
     res.status = 200;
@@ -122,8 +128,7 @@ int main() {
       fs::path abs = fs::path(path("static/html")) / (req.path.substr(1) + ".html");
       if (!fs::exists(abs)) {
         res.status = 404;
-        res.json({{"error", "not found"}});
-        return;
+        return res.json({{"error", "not found"}});
       }
       res.html(file(abs.string()));
       return;
@@ -135,11 +140,9 @@ int main() {
       // require .js explicitly
       if (abs.extension() != ".js" or !fs::exists(abs) or !fs::is_regular_file(abs)) {
         res.status = 404;
-        res.json({{"error", "not found"}});
-        return;
+        return res.json({{"error", "not found"}});
       }
-      res.js(file(abs.string()));
-      return;
+      return res.js(file(abs.string()));
     }
 
     // css
@@ -147,11 +150,9 @@ int main() {
       fs::path abs = fs::path(path("static/css")) / req.path.substr(5);
       if (abs.extension() != ".css" or !fs::exists(abs) or !fs::is_regular_file(abs)) {
         res.status = 404;
-        res.json({{"error", "not found"}});
-        return;
+        return res.json({{"error", "not found"}});
       }
-      res.css(file(abs.string()));
-      return;
+      return res.css(file(abs.string()));
     }
 
     // images
@@ -159,8 +160,7 @@ int main() {
       fs::path abs = fs::path(path("static/images")) / req.path.substr(8);
       if (!fs::exists(abs) or !fs::is_regular_file(abs)) {
         res.status = 404;
-        res.json({{"error", "not found"}});
-        return;
+        return res.json({{"error", "not found"}});
       }
       res.headers["content-type"] = res.mime(abs.extension().string());
       res.body = file(abs.string());

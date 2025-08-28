@@ -1,5 +1,5 @@
 document.getElementById('submit-button').addEventListener('click', async () => {
-  const eq = document.getElementById('eq').textContent;
+  const eq = document.getElementById('eq').value;
   let res = await fetch('/equation/balance', {
     method: 'POST',
     headers: {
