@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemequations</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div class="title-div">
+    <img src="/images/benzene.png">
+    <div class="title-text">
+      <h1>Chemequations</h1>
+      <p>and so much more!</p>
+    </div>
+  </div>
+
+  <div class="center-div">
+    <input id="eq" placeholder="Enter an equation, for example, H2 + Cl2 = HCl">
+    <button class="submit-button" id="submit-button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+    </button>
+  </div>
+
+  <p class="err-msg" id="err-msg" style="display: none;"></p>
+  <p class="balanced"></p>
+
+  <script src="/js/index.js"></script>
+</body>
+
+</html>

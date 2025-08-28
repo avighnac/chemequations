@@ -1,0 +1,5 @@
+sha256.cpp
+.env
+database.db
+build/
+.vscode/
