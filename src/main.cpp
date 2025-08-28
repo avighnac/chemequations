@@ -96,7 +96,7 @@ int main() {
   socket sock;
   sock.listen(6942, [&](const socket::request &req, socket::response &res) {
     // allow cors
-    res.headers["access-control-allow-origin"] = std::getenv("FRONTEND_PATH");
+    res.headers["access-control-allow-origin"] = std::getenv("FRONTEND_URL");
     res.headers["access-control-allow-credentials"] = "true";
     res.headers["access-control-allow-headers"] = "Content-Type, Authorization";
     res.status = 200;
