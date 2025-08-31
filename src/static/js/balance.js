@@ -172,15 +172,12 @@ document.getElementById('button-balance').addEventListener('click', () => {
   }
   // do gaussian elimination
   for (let i = 0; i < matrix[0].length - 1; ++i) {
-    let j = matrix.findIndex((arr, _i) => {
-      return _i >= i && arr[i] != 0;
-    });
+    let j = matrix.findIndex((arr, _i) => _i >= i && arr[i] != 0);
     if (j == -1) {
       return render_error('System of equations is unsolvable');
     }
     [matrix[i], matrix[j]] = [matrix[j], matrix[i]];
-    let fac = matrix[i][i];
-    matrix[i] = matrix[i].map(e => e.div(fac));
+    matrix[i] = matrix[i].map(e => e.div(matrix[i][i]));
     for (let j = i + 1; j < matrix.length; ++j) {
       // matrix[j] -= matrix[j][i] * matrix[i];
       matrix[j] = matrix[j].map((e, k) => e.sub(matrix[j][i].mul(matrix[i][k])));
