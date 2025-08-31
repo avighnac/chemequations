@@ -3,3 +3,4 @@ sha256.cpp
 database.db
 build/
 .vscode/
+*.DS_Store

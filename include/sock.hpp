@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include <iostream>
 #include <netinet/in.h> // sockaddr_in, htons, htonl, INADDR_ANY
 #include <semaphore>
 #include <sstream>
@@ -121,6 +122,9 @@ public:
         return "application/pdf";
       if (ext == ".zip")
         return "application/zip";
+      if (ext == ".woff") {
+        return "font/woff";
+      }
       return "application/octet-stream";
     }
 

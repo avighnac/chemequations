@@ -4,11 +4,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chemequations</title>
+  <title>Balance — Chemequations</title>
   <link rel="stylesheet" href="/css/general.css">
   <link rel="stylesheet" href="/css/header.css">
-  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/balance.css">
   <meta charset="utf-8">
+  <script>
+    window.MathJax = {
+      tex: {
+        packages: { '[+]': ['mhchem'] },
+      },
+      chtml: {
+        fontURL: '/fonts',
+      }
+    };
+  </script>
+  <script async src="/js/tex-chtml-full.js"></script>
+  <script async src="/js/fraction.js"></script>
 </head>
 
 <body>
@@ -19,7 +31,7 @@
       </div>
       <div class="header-stuff">
         <div class="header-links">
-          <a href="/balance">Balance</a>
+          <a href="/balance" class="active">Balance</a>
           <a href="/name">Name</a>
           <a href="/reactions">Reactions</a>
           <a href="/convert">Convert</a>
@@ -35,7 +47,7 @@
     </div>
     <div class="dropdown-header-container" id="dropdown-header-container">
       <div class="header-dropdown">
-        <a href="/balance">Balance</a>
+        <a href="/balance" class="active">Balance</a>
         <a href="/name">Name</a>
         <a href="/reactions">Reactions</a>
         <a href="/convert">Convert</a>
@@ -44,23 +56,25 @@
   </div>
 
   <main>
-    <div class="main-heading">
-      <h1>An advanced tool that knows chemistry</h1>
-      <p class="unlike">Unlike you.</p>
+    <div class="balance-container">
+      <h1>Balance a reaction</h1>
+      <div class="balance-input-container">
+        <input class="balance-reaction-input" id="balance-reaction-input"
+          placeholder="Enter a reaction, for example, H2 + O2 = H2O...">
+        <button class="button-balance" id="button-balance">></button>
+      </div>
     </div>
-    <span class="main-separator"></span>
-    <div class="main-content">
-      <p>
-        Go to <a href="/balance">balance</a> to balance a chemical reaction.
-        Or <a href="/name">name</a> for IUPAC naming, <a href="/reactions">reactions</a> to look up any named reaction,
-        and
-        <a href="/convert">convert</a> to convert any compound to any other compound with a series of chemical
-        reactions.
-      </p>
+    <span class="balanced-separator"></span>
+    <div class="balanced-output-container">
+      <p class="error-message" id="error-message"></p>
+      <div class="balanced-output-no-error" id="balanced-output-no-error">
+        <p class="balanced-reaction" id="balanced-reaction"></p>
+      </div>
     </div>
   </main>
 
   <script src="/js/general.js"></script>
+  <script src="/js/balance.js"></script>
 </body>
 
 </html>

@@ -1,1 +1,3 @@
 include/json.hpp linguist-vendored
+src/static/js/tex-chtml-full.js linguist-vendored
+src/static/js/fraction.js linguist-vendored

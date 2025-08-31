@@ -113,14 +113,12 @@ int main() {
     std::cout << "[" << req.method << "]: " << req.path << '\n';
     // index.html
     if (req.path == "/") {
-      res.html(file(path("static/html/index.html")));
-      return;
+      return res.html(file(path("static/html/index.html")));
     }
     // prevent ../ malicious stuff
     if (!safe(req.path)) {
       res.status = 404;
-      res.json({{"error", "not found"}});
-      return;
+      return res.html(file(path("static/html/404.html")));
     }
 
     // html
@@ -128,7 +126,7 @@ int main() {
       fs::path abs = fs::path(path("static/html")) / (req.path.substr(1) + ".html");
       if (!fs::exists(abs)) {
         res.status = 404;
-        return res.json({{"error", "not found"}});
+        return res.html(file(path("static/html/404.html")));
       }
       res.html(file(abs.string()));
       return;
@@ -140,7 +138,7 @@ int main() {
       // require .js explicitly
       if (abs.extension() != ".js" or !fs::exists(abs) or !fs::is_regular_file(abs)) {
         res.status = 404;
-        return res.json({{"error", "not found"}});
+        return res.html(file(path("static/html/404.html")));
       }
       return res.js(file(abs.string()));
     }
@@ -150,7 +148,7 @@ int main() {
       fs::path abs = fs::path(path("static/css")) / req.path.substr(5);
       if (abs.extension() != ".css" or !fs::exists(abs) or !fs::is_regular_file(abs)) {
         res.status = 404;
-        return res.json({{"error", "not found"}});
+        return res.html(file(path("static/html/404.html")));
       }
       return res.css(file(abs.string()));
     }
@@ -160,17 +158,32 @@ int main() {
       fs::path abs = fs::path(path("static/images")) / req.path.substr(8);
       if (!fs::exists(abs) or !fs::is_regular_file(abs)) {
         res.status = 404;
-        return res.json({{"error", "not found"}});
+        return res.html(file(path("static/html/404.html")));
       }
       res.headers["content-type"] = res.mime(abs.extension().string());
       res.body = file(abs.string());
       return;
     }
 
+    // fonts
+    if (req.path.rfind("/fonts/", 0) == 0) {
+      fs::path abs = fs::path(path("static/fonts")) / req.path.substr(7);
+      if (!fs::exists(abs) or !fs::is_regular_file(abs)) {
+        res.status = 404;
+        return res.html(file(path("static/html/404.html")));
+      }
+      res.headers["content-type"] = res.mime(abs.extension().string());
+      res.body = file(abs.string());
+      return;
+    }
+
+    // serve chemistry information
+    route("/data/atoms", get_atoms);
+
     // api endpoints
-    // route("/api/whoami", whoami);
+    // route("/equation/balance", balance);
 
     res.status = 404;
-    res.json({{"error", "not found"}});
+    res.html(file(path("static/html/404.html")));
   });
 }
