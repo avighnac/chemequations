@@ -19,24 +19,6 @@ int main() {
   using sock::socket;
   namespace fs = std::filesystem;
 
-  auto path = [&](std::string p) {
-    return "/Users/avighna/Desktop/webdev/chemapp/src/" + p;
-  };
-
-  auto file = [&](const std::string &abs) -> std::string {
-    std::ifstream f(abs, std::ios::binary);
-    if (!f) {
-      return {}; // caller will handle 404}
-    }
-    f.seekg(0, std::ios::end);
-    std::streamsize size = f.tellg();
-    f.seekg(0, std::ios::beg);
-    std::string s(size > 0 ? static_cast<size_t>(size) : 0, '\0');
-    if (size > 0)
-      f.read(s.data(), size);
-    return s;
-  };
-
   auto trim = [](std::string s) {
     auto l = s.find_first_not_of(" \t\r\n");
     auto r = s.find_last_not_of(" \t\r\n");
@@ -88,16 +70,35 @@ int main() {
     }
   }
 
+  // check .env
+  const char *frontend_url = std::getenv("FRONTEND_URL");
+  const char *src_path = std::getenv("SRC_PATH");
+  if (!frontend_url or !src_path) {
+    throw std::runtime_error(".env not configured properly");
+  }
+
+  auto path = [&](std::string p) {
+    return std::string(src_path) + p;
+  };
+
+  auto file = [&](const std::string &abs) -> std::string {
+    std::ifstream f(abs, std::ios::binary);
+    if (!f) {
+      return {}; // caller will handle 404}
+    }
+    f.seekg(0, std::ios::end);
+    std::streamsize size = f.tellg();
+    f.seekg(0, std::ios::beg);
+    std::string s(size > 0 ? static_cast<size_t>(size) : 0, '\0');
+    if (size > 0)
+      f.read(s.data(), size);
+    return s;
+  };
+
   auto safe = [](std::string_view p) {
     // very basic traversal guard
     return p.find("..") == std::string_view::npos;
   };
-
-  // check .env
-  const char *frontend_url = std::getenv("FRONTEND_URL");
-  if (!frontend_url) {
-    throw std::runtime_error("FRONTEND_URL not set");
-  }
 
   socket sock;
   sock.listen(6942, [&](const socket::request &req, socket::response &res) {
