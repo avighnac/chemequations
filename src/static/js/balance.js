@@ -46,6 +46,7 @@ function parse_compound(compound) {
       elem_mode.push(true);
     }
     if (compound[i] == '(') {
+      clean_up_cur(bal, 1);
       elem_mode[bal++] = false;
       continue;
     }
@@ -186,12 +187,21 @@ document.getElementById('button-balance').addEventListener('click', () => {
     }
   }
   let coeffs = [];
-  let gcd = new Fraction(1);
+  let gcd = new Fraction(0);
   for (let i = 0; i < matrix[0].length - 1; ++i) {
     coeffs.push(matrix[i].at(-1).mul(-1));
     gcd = gcd.gcd(coeffs[i]);
   }
   coeffs.push(new Fraction(1));
+  coeffs.push(new Fraction(1));
+  // check for contradictions
+  for (let i = matrix[0].length - 1; i < matrix.length; ++i) {
+    let val = Fraction(0);
+    matrix[i].forEach((e, i) => val = val.add(e.mul(coeffs[i])));
+    if (val.toString() != '0') {
+      return render_error('System of equations contains contradictions');
+    }
+  }
   for (let i = 0; i < coeffs.length; ++i) {
     coeffs[i] = coeffs[i].div(gcd);
   }
