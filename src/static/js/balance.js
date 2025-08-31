@@ -112,6 +112,12 @@ function parse_reaction(reaction) {
   let compounds = [];
   let lhs = _compounds[0].split('+').map(x => x.replace(/^\d+/, ''));
   let rhs = _compounds[1].split('+').map(x => x.replace(/^\d+/, ''));
+  if (!lhs) { 
+    return render_error('An empty LHS is not allowed');
+  }
+  if (!rhs) {
+    return render_error('An empty RHS is not allowed');
+  }
   try {
     for (const i of lhs) {
       compounds.push(parse_compound(i));
