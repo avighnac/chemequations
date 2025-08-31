@@ -104,7 +104,7 @@ function parse_compound(compound) {
 }
 
 function parse_reaction(reaction) {
-  reaction = reaction.replaceAll(' ', '').replace(/-+/g, '-').replace('->', '=');
+  reaction = reaction.replaceAll(' ', '').replaceAll('−', '-').replace(/-+/g, '-').replace('->', '=');
   let _compounds = reaction.split('=');
   if (_compounds.length != 2) {
     return render_error(`Expected exactly 1 =, found ${_compounds.length - 1}`);
