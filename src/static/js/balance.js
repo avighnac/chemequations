@@ -190,10 +190,16 @@ document.getElementById('button-balance').addEventListener('click', () => {
     }
   }
   let coeffs = [];
-  let gcd = new Fraction(0);
+  let lcm = 1n;
+  function gcd(a, b) {
+    while (b != 0) {
+      [a, b] = [b, a % b];
+    }
+    return a;
+  };
   for (let i = 0; i < matrix[0].length - 1; ++i) {
     coeffs.push(matrix[i].at(-1).mul(-1));
-    gcd = gcd.gcd(coeffs[i]);
+    lcm = (lcm * coeffs[i].d) / gcd(lcm, coeffs[i].d);
   }
   coeffs.push(new Fraction(1));
   coeffs.push(new Fraction(1));
@@ -206,7 +212,7 @@ document.getElementById('button-balance').addEventListener('click', () => {
     }
   }
   for (let i = 0; i < coeffs.length; ++i) {
-    coeffs[i] = coeffs[i].div(gcd);
+    coeffs[i] = coeffs[i].mul(lcm);
   }
   if (coeffs.findIndex(e => e.toString() == '0') != -1) {
     return render_error('Reaction cannot be balanced');
